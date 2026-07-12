@@ -82,7 +82,7 @@ export function saveLastPreset(name) {
 }
 
 export function loadSettings() {
-  return { muted: false, vibration: true, volume: 0.7, ticks: true, ...read(KEYS.settings, {}) };
+  return { muted: false, vibration: true, volume: 0.7, ticks: true, secondsOnly: false, ...read(KEYS.settings, {}) };
 }
 
 export function saveSettings(settings) {
