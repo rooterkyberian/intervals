@@ -1,0 +1,327 @@
+:root {
+  --bg: #0f172a;
+  --card: #1e293b;
+  --border: #334155;
+  --text: #f8fafc;
+  --text-dim: #94a3b8;
+  --accent: #22c55e;
+  --danger: #ef4444;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.screen {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  padding: calc(env(safe-area-inset-top) + 1rem) 1rem calc(env(safe-area-inset-bottom) + 1rem);
+  max-width: 34rem;
+  margin: 0 auto;
+  gap: 1rem;
+}
+
+/* ---------- setup screen ---------- */
+
+header h1 {
+  font-size: 1.5rem;
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 1rem;
+}
+
+.presets {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.preset-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--text-dim);
+}
+
+.preset-row select {
+  flex: 1;
+  font-size: 1rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+}
+
+.preset-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.preset-actions input {
+  flex: 1;
+  min-width: 0;
+  font-size: 1rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+}
+
+.btn-small {
+  font-size: 0.9rem;
+  padding: 0.5rem 0.9rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border);
+  background: var(--border);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.btn-danger:not(:disabled) {
+  background: #7f1d1d;
+  border-color: #991b1b;
+}
+
+.btn-small:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.9rem 0.75rem;
+}
+
+.field label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  margin-bottom: 0.3rem;
+}
+
+.stepper {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: 0.6rem;
+  overflow: hidden;
+}
+
+.stepper input {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  text-align: center;
+  font-size: 1.15rem;
+  font-variant-numeric: tabular-nums;
+  border: 0;
+  background: var(--bg);
+  color: var(--text);
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.stepper input::-webkit-outer-spin-button,
+.stepper input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+.stepper button {
+  width: 2.6rem;
+  font-size: 1.3rem;
+  border: 0;
+  background: var(--border);
+  color: var(--text);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.stepper button:active {
+  background: #475569;
+}
+
+.toggles {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  cursor: pointer;
+}
+
+.toggle input {
+  width: 1.15rem;
+  height: 1.15rem;
+  accent-color: var(--accent);
+}
+
+.total {
+  margin-left: auto;
+  color: var(--text-dim);
+}
+
+.total strong {
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.btn-primary {
+  margin-top: auto;
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 1.1rem;
+  border: 0;
+  border-radius: 1rem;
+  background: var(--accent);
+  color: #052e16;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.btn-primary:active {
+  filter: brightness(1.1);
+}
+
+/* ---------- timer screen ---------- */
+
+#timer {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transition: background-color 0.3s;
+}
+
+#timer.phase-countdown { background: #a16207; }
+#timer.phase-work      { background: #15803d; }
+#timer.phase-rest      { background: #b91c1c; }
+#timer.phase-setrest   { background: #c2410c; }
+#timer.phase-done      { background: #1e3a8a; }
+
+#timer.paused #t-time {
+  opacity: 0.45;
+}
+
+.timer-top {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#t-phase {
+  font-size: clamp(1.4rem, 6vw, 2.2rem);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+#t-mute {
+  font-size: 1.5rem;
+  background: rgba(0, 0, 0, 0.25);
+  border: 0;
+  border-radius: 50%;
+  width: 3rem;
+  height: 3rem;
+  cursor: pointer;
+}
+
+#t-time {
+  font-size: clamp(6rem, 32vw, 13rem);
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  margin: auto 0;
+}
+
+#t-progress {
+  width: 100%;
+  height: 0.6rem;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+#t-progress-fill {
+  height: 100%;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 999px;
+  transform-origin: left;
+  transition: transform 0.1s linear;
+}
+
+.timer-meta {
+  display: flex;
+  gap: 1.5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  min-height: 1.5rem;
+}
+
+#t-next {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 1rem;
+  min-height: 1.25rem;
+}
+
+.timer-controls {
+  width: 100%;
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.btn-big {
+  flex: 1;
+  font-size: 1.1rem;
+  font-weight: 700;
+  padding: 1rem 0;
+  border: 0;
+  border-radius: 0.9rem;
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--text);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.btn-big:active {
+  background: rgba(0, 0, 0, 0.45);
+}
+
+@media (min-width: 40rem) {
+  .fields {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
