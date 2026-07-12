@@ -108,6 +108,24 @@ const PHASE_SOUNDS = {
 let schedule = [];
 let lastTickKey = '';
 
+// Fullscreen for the duration of a workout (start → stop). Not supported on
+// iPhone Safari for non-video elements — there the try/catch makes it a no-op
+// (the installed PWA is already chromeless via display: standalone).
+async function enterFullscreen() {
+  if (document.fullscreenElement) return;
+  try {
+    await document.documentElement.requestFullscreen({ navigationUI: 'hide' });
+  } catch {
+    // unsupported or denied — the workout works fine without it
+  }
+}
+
+function exitFullscreen() {
+  if (document.fullscreenElement) {
+    document.exitFullscreen().catch(() => {});
+  }
+}
+
 function showScreen(id) {
   $('#setup').classList.toggle('hidden', id !== 'setup');
   $('#timer').classList.toggle('hidden', id !== 'timer');
@@ -147,12 +165,13 @@ function renderFinished() {
   $('#t-progress-fill').style.transform = 'scaleX(0)';
   $('#t-pause').classList.add('hidden');
   audio.finish();
-  wakelock.release();
+  // wake lock and fullscreen are kept until Exit so the DONE screen stays up
 }
 
 function startWorkout() {
   audio.unlock();
   wakelock.acquire();
+  enterFullscreen();
   schedule = buildSchedule(config);
   if (schedule.length === 0) return;
   lastTickKey = '';
@@ -185,6 +204,7 @@ function exitWorkout() {
   timer?.reset();
   timer = null;
   wakelock.release();
+  exitFullscreen();
   $('#timer').classList.remove('paused');
   showScreen('setup');
 }

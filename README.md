@@ -9,7 +9,7 @@ Offline-first interval workout timer PWA. No backend, no accounts, no build step
 - **Timer engine** — configurable countdown, work/rest intervals, rounds, and multiple sets with a longer rest between sets. Pause / resume / restart. Big color-coded display (yellow = countdown, green = work, red = rest, orange = set rest).
 - **Audio & haptics** — beeps on every phase change, 3-2-1 lead-in ticks, distinct finish sound. All tones are generated with the Web Audio API (no audio files, works offline). Mute toggle and optional vibration (Android).
 - **Presets** — built-ins (Tabata, HIIT 30/15, Boxing 3min) plus your own named presets, persisted in `localStorage`.
-- **PWA** — installable (`manifest.json`, `display: standalone`), cache-first service worker for 100% offline use, and the Screen Wake Lock API keeps the screen on during a workout.
+- **PWA** — installable (`manifest.json`, `display: standalone`), cache-first service worker for 100% offline use, and the Screen Wake Lock + Fullscreen APIs keep the screen on and distraction-free for the whole workout (start to stop).
 
 ## Development
 
