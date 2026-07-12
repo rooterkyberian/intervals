@@ -7,11 +7,11 @@ const $ = (sel) => document.querySelector(sel);
 
 const FIELDS = [
   { key: 'countdown', min: 0, max: 999 },
-  { key: 'work', min: 1, max: 5999 },
-  { key: 'rest', min: 0, max: 5999 },
+  { key: 'work', min: 1, max: 5999, time: true },
+  { key: 'rest', min: 0, max: 5999, time: true },
   { key: 'rounds', min: 1, max: 99 },
   { key: 'sets', min: 1, max: 99 },
-  { key: 'setRest', min: 0, max: 5999 },
+  { key: 'setRest', min: 0, max: 5999, time: true },
 ];
 
 let config = storage.loadConfig();
@@ -20,10 +20,24 @@ let timer = null;
 
 // ---------- helpers ----------
 
-function fmtTime(totalSec) {
+/** All times are shown as m:ss (only the countdown phase uses bare digits). */
+function fmtClock(totalSec) {
   const m = Math.floor(totalSec / 60);
   const s = totalSec % 60;
-  return m > 0 ? `${m}:${String(s).padStart(2, '0')}` : String(s);
+  return `${m}:${String(s).padStart(2, '0')}`;
+}
+
+/** Accepts "90" (seconds) or "1:30" / "2:15" (m:ss). NaN when unparseable. */
+function parseDuration(str) {
+  const trimmed = String(str).trim();
+  if (trimmed.includes(':')) {
+    const [m, s] = trimmed.split(':');
+    const mins = parseInt(m, 10);
+    const secs = parseInt(s, 10);
+    if (!Number.isFinite(mins) || !Number.isFinite(secs)) return NaN;
+    return mins * 60 + secs;
+  }
+  return parseInt(trimmed, 10);
 }
 
 function inputFor(key) {
@@ -33,14 +47,15 @@ function inputFor(key) {
 // ---------- setup screen ----------
 
 function renderConfig() {
-  for (const f of FIELDS) inputFor(f.key).value = config[f.key];
-  $('#total-time').textContent = fmtTime(Math.round(totalDuration(config)));
+  for (const f of FIELDS) {
+    inputFor(f.key).value = f.time ? fmtClock(config[f.key]) : config[f.key];
+  }
+  $('#total-time').textContent = fmtClock(Math.round(totalDuration(config)));
 }
 
 function readField(f) {
-  const raw = parseInt(inputFor(f.key).value, 10);
-  const val = Number.isFinite(raw) ? Math.min(f.max, Math.max(f.min, raw)) : storage.DEFAULT_CONFIG[f.key];
-  return val;
+  const raw = f.time ? parseDuration(inputFor(f.key).value) : parseInt(inputFor(f.key).value, 10);
+  return Number.isFinite(raw) ? Math.min(f.max, Math.max(f.min, raw)) : storage.DEFAULT_CONFIG[f.key];
 }
 
 function onFieldChange() {
@@ -147,7 +162,7 @@ function renderPhase(phase, index) {
 
 function renderTick({ phase, index, remainingMs, progress }) {
   const sec = Math.ceil(remainingMs / 1000);
-  $('#t-time').textContent = fmtTime(sec);
+  $('#t-time').textContent = phase.type === 'countdown' ? String(sec) : fmtClock(sec);
   $('#t-progress-fill').style.transform = `scaleX(${1 - progress})`;
   // 3-2-1 lead-in ticks before every transition
   const key = `${index}:${sec}`;
@@ -253,7 +268,8 @@ function init() {
       const input = btn.closest('.stepper').querySelector('input');
       const f = FIELDS.find((x) => `cfg-${x.key}` === input.id);
       const step = parseInt(btn.dataset.step, 10);
-      const cur = parseInt(input.value, 10) || 0;
+      const parsed = f.time ? parseDuration(input.value) : parseInt(input.value, 10);
+      const cur = Number.isFinite(parsed) ? parsed : config[f.key];
       input.value = Math.min(f.max, Math.max(f.min, cur + step));
       onFieldChange();
     });
