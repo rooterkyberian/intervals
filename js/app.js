@@ -20,8 +20,12 @@ let timer = null;
 
 // ---------- helpers ----------
 
-/** All times are shown as m:ss (only the countdown phase uses bare digits). */
+/**
+ * Times are shown as m:ss unless the "always seconds" display setting is on
+ * (the countdown phase always uses bare digits either way).
+ */
 function fmtClock(totalSec) {
+  if (settings.secondsOnly) return String(totalSec);
   const m = Math.floor(totalSec / 60);
   const s = totalSec % 60;
   return `${m}:${String(s).padStart(2, '0')}`;
@@ -240,6 +244,7 @@ function applySettings() {
   $('#set-volume').value = Math.round(settings.volume * 100);
   $('#set-volume-val').textContent = `${Math.round(settings.volume * 100)}%`;
   $('#set-ticks').checked = settings.ticks;
+  $('#set-seconds').checked = settings.secondsOnly;
   $('#set-vibration').checked = settings.vibration;
   $('#t-mute').textContent = settings.muted ? '\u{1F507}' : '\u{1F50A}';
   $('#t-mute').setAttribute('aria-label', settings.muted ? 'Unmute' : 'Mute');
@@ -298,6 +303,10 @@ function init() {
   $('#set-sound').addEventListener('change', (e) => updateSettings({ muted: !e.target.checked }));
   $('#set-volume').addEventListener('input', (e) => updateSettings({ volume: e.target.valueAsNumber / 100 }));
   $('#set-ticks').addEventListener('change', (e) => updateSettings({ ticks: e.target.checked }));
+  $('#set-seconds').addEventListener('change', (e) => {
+    updateSettings({ secondsOnly: e.target.checked });
+    renderConfig(); // reformat the visible fields and total immediately
+  });
   $('#set-vibration').addEventListener('change', (e) => updateSettings({ vibration: e.target.checked }));
   $('#set-test').addEventListener('click', () => audio.test());
   $('#t-mute').addEventListener('click', () => updateSettings({ muted: !settings.muted }));
