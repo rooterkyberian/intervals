@@ -1,5 +1,7 @@
 # Intervals
 
+**Live app: https://rooterkyberian.github.io/intervals/**
+
 Offline-first interval workout timer PWA. No backend, no accounts, no build step — plain HTML/CSS/JS served statically.
 
 ## Features
