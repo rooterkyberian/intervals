@@ -4,6 +4,7 @@ const KEYS = {
   config: 'intervals.config',
   presets: 'intervals.presets',
   settings: 'intervals.settings',
+  lastPreset: 'intervals.lastPreset',
 };
 
 export const DEFAULT_CONFIG = {
@@ -69,6 +70,15 @@ export function deletePreset(name) {
 
 export function isBuiltinPreset(name) {
   return name in BUILTIN_PRESETS && !(name in loadUserPresets());
+}
+
+/** Name of the preset selected when the app was last used ('' = custom). */
+export function loadLastPreset() {
+  return read(KEYS.lastPreset, '');
+}
+
+export function saveLastPreset(name) {
+  write(KEYS.lastPreset, name);
 }
 
 export function loadSettings() {

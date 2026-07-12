@@ -47,6 +47,7 @@ function onFieldChange() {
   for (const f of FIELDS) config[f.key] = readField(f);
   storage.saveConfig(config);
   $('#preset-select').value = '';
+  storage.saveLastPreset('');
   updatePresetButtons();
   renderConfig();
 }
@@ -78,6 +79,7 @@ function applyPreset(name) {
   if (!preset) return;
   config = { ...storage.DEFAULT_CONFIG, ...preset };
   storage.saveConfig(config);
+  storage.saveLastPreset(name);
   renderConfig();
   updatePresetButtons();
 }
@@ -90,6 +92,7 @@ function savePreset() {
     return;
   }
   storage.savePreset(name, config);
+  storage.saveLastPreset(name);
   nameInput.value = '';
   renderPresets(name);
 }
@@ -218,7 +221,8 @@ function updateSettings(patch) {
 
 function init() {
   renderConfig();
-  renderPresets();
+  const lastPreset = storage.loadLastPreset();
+  renderPresets(lastPreset in storage.getAllPresets() ? lastPreset : '');
   applySettings();
 
   for (const f of FIELDS) {
@@ -244,6 +248,7 @@ function init() {
     const name = $('#preset-select').value;
     if (name && !storage.isBuiltinPreset(name)) {
       storage.deletePreset(name);
+      storage.saveLastPreset('');
       renderPresets();
     }
   });
