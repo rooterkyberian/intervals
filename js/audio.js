@@ -4,9 +4,11 @@
 let ctx = null;
 export let muted = false;
 export let vibration = true;
+let volume = 0.7;
 
 export function setMuted(v) { muted = v; }
 export function setVibration(v) { vibration = v; }
+export function setVolume(v) { volume = Math.min(1, Math.max(0, v)); }
 
 /** Call from a user gesture (Start button) to unlock audio. */
 export function unlock() {
@@ -24,8 +26,9 @@ export function unlock() {
   src.start(0);
 }
 
-function tone(freq, startIn, duration, { type = 'square', gain = 0.22 } = {}) {
-  if (muted || !ctx || ctx.state !== 'running') return;
+function tone(freq, startIn, duration, { type = 'square', gain = 0.32 } = {}) {
+  if (muted || volume === 0 || !ctx || ctx.state !== 'running') return;
+  gain *= volume;
   const t0 = ctx.currentTime + startIn;
   const osc = ctx.createOscillator();
   const g = ctx.createGain();
@@ -62,6 +65,14 @@ export function workStart() {
 export function restStart() {
   tone(440, 0, 0.35);
   vibrate(250);
+}
+
+/** Preview beep for the settings panel (call from a user gesture). */
+export function test() {
+  unlock();
+  tone(880, 0, 0.15);
+  tone(1175, 0.17, 0.2);
+  vibrate([120, 60, 120]);
 }
 
 /** Workout complete — distinct ascending triad. */

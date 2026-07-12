@@ -19,6 +19,7 @@
   <div id="setup" class="screen">
     <header>
       <h1>Intervals</h1>
+      <button id="settings-open" type="button" aria-label="Settings">&#9881;&#65039;</button>
     </header>
 
     <section class="presets card">
@@ -85,13 +86,31 @@
     </section>
 
     <section class="toggles card">
-      <label class="toggle"><input type="checkbox" id="opt-sound"> Sound</label>
-      <label class="toggle"><input type="checkbox" id="opt-vibration"> Vibration</label>
       <span class="total">Total <strong id="total-time">0:00</strong></span>
     </section>
 
     <button id="start" class="btn-primary" type="button">Start</button>
   </div>
+
+  <dialog id="settings">
+    <h2>Settings</h2>
+    <div class="settings-group">
+      <h3>Sound</h3>
+      <label class="toggle"><input type="checkbox" id="set-sound"> Sound on</label>
+      <label class="setting-row" for="set-volume">
+        <span>Volume</span>
+        <input id="set-volume" type="range" min="0" max="100" step="5">
+        <span id="set-volume-val">70%</span>
+      </label>
+      <label class="toggle"><input type="checkbox" id="set-ticks"> 3-2-1 countdown ticks</label>
+      <button id="set-test" class="btn-small" type="button">Test sound</button>
+    </div>
+    <div class="settings-group">
+      <h3>Haptics</h3>
+      <label class="toggle"><input type="checkbox" id="set-vibration"> Vibration (Android)</label>
+    </div>
+    <button id="settings-close" class="btn-small" type="button">Close</button>
+  </dialog>
 
   <div id="timer" class="screen hidden">
     <div class="timer-top">
