@@ -1,7 +1,7 @@
 // Cache-first service worker: precache everything, serve from cache,
 // fall back to network (and cache the result) — 100% offline after first load.
 
-const CACHE = 'intervals-v3';
+const CACHE = 'intervals-v4';
 
 const ASSETS = [
   './',
