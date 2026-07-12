@@ -132,7 +132,7 @@ function renderTick({ phase, index, remainingMs, progress }) {
   const key = `${index}:${sec}`;
   if (sec >= 1 && sec <= 3 && key !== lastTickKey && timer.state === 'running') {
     lastTickKey = key;
-    audio.tick();
+    if (settings.ticks) audio.tick();
   }
 }
 
@@ -197,17 +197,22 @@ function restartWorkout() {
 function applySettings() {
   audio.setMuted(settings.muted);
   audio.setVibration(settings.vibration);
-  $('#opt-sound').checked = !settings.muted;
-  $('#opt-vibration').checked = settings.vibration;
+  audio.setVolume(settings.volume);
+  $('#set-sound').checked = !settings.muted;
+  $('#set-volume').value = Math.round(settings.volume * 100);
+  $('#set-volume-val').textContent = `${Math.round(settings.volume * 100)}%`;
+  $('#set-ticks').checked = settings.ticks;
+  $('#set-vibration').checked = settings.vibration;
   $('#t-mute').textContent = settings.muted ? '\u{1F507}' : '\u{1F50A}';
   $('#t-mute').setAttribute('aria-label', settings.muted ? 'Unmute' : 'Mute');
 }
 
-function setMuted(muted) {
-  settings.muted = muted;
+function updateSettings(patch) {
+  Object.assign(settings, patch);
   storage.saveSettings(settings);
   applySettings();
 }
+
 
 // ---------- wiring ----------
 
@@ -243,13 +248,18 @@ function init() {
     }
   });
 
-  $('#opt-sound').addEventListener('change', (e) => setMuted(!e.target.checked));
-  $('#opt-vibration').addEventListener('change', (e) => {
-    settings.vibration = e.target.checked;
-    storage.saveSettings(settings);
-    applySettings();
+  const dialog = $('#settings');
+  $('#settings-open').addEventListener('click', () => dialog.showModal());
+  $('#settings-close').addEventListener('click', () => dialog.close());
+  dialog.addEventListener('click', (e) => {
+    if (e.target === dialog) dialog.close(); // tap on backdrop
   });
-  $('#t-mute').addEventListener('click', () => setMuted(!settings.muted));
+  $('#set-sound').addEventListener('change', (e) => updateSettings({ muted: !e.target.checked }));
+  $('#set-volume').addEventListener('input', (e) => updateSettings({ volume: e.target.valueAsNumber / 100 }));
+  $('#set-ticks').addEventListener('change', (e) => updateSettings({ ticks: e.target.checked }));
+  $('#set-vibration').addEventListener('change', (e) => updateSettings({ vibration: e.target.checked }));
+  $('#set-test').addEventListener('click', () => audio.test());
+  $('#t-mute').addEventListener('click', () => updateSettings({ muted: !settings.muted }));
 
   $('#start').addEventListener('click', startWorkout);
   $('#t-pause').addEventListener('click', togglePause);
